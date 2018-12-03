@@ -6,15 +6,27 @@ class ParseJson
   attr_accessor :json_file, :date_split, :date_length_array, :key_type_array
 
   def initialize(json_file)
-    @json_file = JSON.parse(File.read(json_file))
+    @json_file = JSON.parse(json_file)
     @date_split_array = []
     @date_length_array = []
     @key_type_array = []
     @rate_keys_array = []
   end
 
+  def get_hash_length
+    json_file.length
+  end
+
   def get_base
     json_file["base"]
+  end
+
+  def get_rates
+    @json_file["rates"]
+  end
+
+  def get_date
+    json_file["date"]
   end
 
   def get_number_of_rates

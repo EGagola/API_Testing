@@ -1,7 +1,8 @@
 describe 'Testing the exchange rates' do
 
-  before(:all) do
-    @exchange_rates = ParseJson.new()
+  before(:each) do
+    @api_key = ENV['FIXER_API_KEY']
+    @exchange_rates = ParseJson.new(HTTParty::get("http://data.fixer.io/api/latest?access_key=#{@api_key}").body)
   end
 
   it 'Should be a hash' do
@@ -12,12 +13,12 @@ describe 'Testing the exchange rates' do
     expect(@exchange_rates.get_base).to eq "EUR"
   end
 
-  it 'should have 31 rates for comparison' do
-    expect(@exchange_rates.get_number_of_rates).to eq 31
+  it 'should have 168 rates for comparison' do
+    expect(@exchange_rates.get_number_of_rates).to eq 168
   end
 
   it 'should have the correct format of date' do
-    expect(@exchange_rates.json_file["date"]).to be_kind_of(String)
+    expect(@exchange_rates.get_date).to be_kind_of(String)
     expect(@exchange_rates.check_date_format).to eq [4,2,2]
   end
 
@@ -37,7 +38,11 @@ describe 'Testing the exchange rates' do
     expect(@exchange_rates.check_rate_key_format).to eq true
   end
 
-  it "should contain a hash of length 3" do
-    expect(@exchange_rates.json_file.length).to eq 3
+  it "should contain a hash of length 5" do
+    expect(@exchange_rates.get_hash_length).to eq 5
+  end
+
+  it "should all rates should be Floats" do
+    @exchange_rates.get_rates.each_value {|value| expect(value).to be_kind_of(Float).or be_kind_of(Integer)}
   end
 end
